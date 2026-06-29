@@ -1,0 +1,20 @@
+[package]
+name = "rtg-core"
+version = "0.1.0"
+edition = "2021"
+description = "Núcleo nativo del motor RTGEngine — Fase 1: La Luz (raymarcher de campos en GPU)"
+
+# Versiones fijadas a una combinación estable y muy documentada (winit 0.29 +
+# wgpu 0.20). Si en el primer build hay desajustes de API, se ajustan aquí.
+[dependencies]
+winit = "0.29"
+wgpu = "0.20"
+pollster = "0.3"
+bytemuck = { version = "1", features = ["derive"] }
+log = "0.4"
+env_logger = "0.11"
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+[profile.release]
+opt-level = 3
+lto = true

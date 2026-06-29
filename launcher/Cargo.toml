@@ -1,0 +1,16 @@
+[package]
+name = "rtg-launcher"
+version = "0.1.0"
+edition = "2021"
+
+# Lanzador nativo sin consola del editor de RTGEngine. Sin dependencias:
+# solo abre el editor (studio.py) con pythonw, sin ventana de comandos.
+
+[[bin]]
+name = "RTGEngine"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true

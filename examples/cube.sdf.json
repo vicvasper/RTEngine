@@ -1,0 +1,29 @@
+{
+  "name": "cube",
+  "resolution": 48,
+  "bounds": [
+    -1.0,
+    1.0
+  ],
+  "source_center": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "source_scale": 0.4811252243246882,
+  "report": {
+    "vertices": 8,
+    "triangulos": 12,
+    "degenerados": 0,
+    "bbox_min": [
+      -1.0,
+      -1.0,
+      -1.0
+    ],
+    "bbox_max": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  }
+}

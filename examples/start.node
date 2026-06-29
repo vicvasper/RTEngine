@@ -1,0 +1,27 @@
+; ----------------------------------------------------------------------------
+;  EDÉN MÍNIMO  —  primera frase del idioma RTGEngine
+;  Tres nodes: un caminante que pasea solo, un candil que ilumina,
+;  y una piedra estática. La misma sintaxis describe forma + lugar + conducta.
+;  Edita estos valores y vuelve a forjar: python forge.py examples/start.node
+; ----------------------------------------------------------------------------
+
+node adam {
+    root H L K          ; raíz: ir / caminar  -> locomoción
+    form  SELFANIM        ; reflexivo: se mueve por sí mismo
+    place   0.0 0.0 0.0     ; centro alrededor del cual pasea
+    params   { size=0.5  speed=1.4  range=1.5  gait=biped  phase=rand }
+}
+
+node candil {
+    root A W R          ; raíz: luz
+    form  EMITTER          ; causativo: ilumina a otros
+    place   2.0 3.5 2.0     ; posición de la fuente de luz
+    params   { lumens=820  kelvin=2700  radius=6.0 }
+}
+
+node even {
+    root Q Sh H         ; raíz: dureza  -> sólido
+    form  STATIC            ; simple: piedra estática
+    place   -1.9 -0.2 0.0   ; a la izquierda, posada en el suelo
+    params   { size=0.8 }
+}
