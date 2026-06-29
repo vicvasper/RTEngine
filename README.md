@@ -4,6 +4,12 @@ A graphics engine **designed from the ground up** around one core idea: *an obje
 
 > The only limitation we accept is the hardware itself (the real GPU and the physics of light). Everything above the GPU API is entirely our own.
 
+
+
+https://github.com/user-attachments/assets/9ce3471b-76b0-4384-a923-e4c07277846d
+
+
+
 ## Status
 
 * **Phase 0 — *The Word*** (complete): the RTGEngine language compiler, written in Python (reference implementation). `source .node -> lexer -> parser -> compiler (bytecode + Validator) -> evaluator`.
