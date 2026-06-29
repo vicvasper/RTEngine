@@ -1,103 +1,102 @@
-# RTGEngine · motor RTGEngine
+# RTGEngine · RTGEngine Engine
 
-Motor gráfico **diseñado desde cero** alrededor de una idea: *un objeto es una
-palabra* (interno **דָּבָר**, node = "palabra" = "cosa"). El contenido no son
-mallas+texturas horneadas, sino **generadores** (nodes) que se evalúan bajo
-demanda. La arquitectura completa está en
-[`../docs/RTGEngine_Manual_Arquitectura_VolII.pdf`](../docs/RTGEngine_Manual_Arquitectura_VolII.pdf).
+A graphics engine **designed from the ground up** around one core idea: *an object is a word* (internally **דָּבָר**, node = "word" = "thing"). Content is not made of pre-baked meshes and textures, but of **generators** (nodes) evaluated on demand. The complete architecture is documented in [`../docs/RTGEngine_Architecture_Manual_VolII.pdf`](../docs/RTGEngine_Architecture_Manual_VolII.pdf).
 
-> El único límite que aceptamos es el hardware (la GPU real y la física de la
-> luz). De la API de GPU para arriba, todo es propio.
+> The only limitation we accept is the hardware itself (the real GPU and the physics of light). Everything above the GPU API is entirely our own.
 
-## Estado
+## Status
 
-- **Fase 0 — *El Verbo*** (completa): el compilador del idioma RTGEngine, en Python
-  (referencia). `fuente .node -> lexer -> parser -> compilador (bytecode +
-  Validator) -> evaluador`.
-- **Fase 1 — *La Luz*** (completa): el motor nativo en Rust + wgpu
-  (`rtg-core`), raymarcher de campos en GPU.
-- **Fase 2 — *La Frase*** (completa): el `.node` **conduce** la escena. El
-  codegen genera el WGSL; el motor lo carga en runtime.
-- **Fase 3 — *La Morada* (Cache)** (v0): amortización temporal — acumula N
-  muestras con jitter en un buffer HDR y las promedia. La calidad se reparte
-  entre frames en vez de pagarla en uno.
+* **Phase 0 — *The Word*** (complete): the RTGEngine language compiler, written in Python (reference implementation). `source .node -> lexer -> parser -> compiler (bytecode + Validator) -> evaluator`.
+
+* **Phase 1 — *The Light*** (complete): the native engine in Rust + wgpu (`rtg-core`), featuring a GPU field raymarcher.
+
+* **Phase 2 — *The Sentence*** (complete): the `.node` file **drives** the scene. The code generator produces the WGSL, and the engine loads it at runtime.
+
+* **Phase 3 — *The Dwelling* (Cache)** (v0): temporal amortization — accumulates N jittered samples in an HDR buffer and averages them. Image quality is distributed across multiple frames instead of being paid for in a single one.
+
   `cargo run --release -- --snapshot out.png --samples 64`
 
-- **Capa de usuario** — el usuario escribe `.scene` con palabras
-  legibles (`thing`, `is walker`, `behavior paces`, `at`). El interno es el
-  motor interno; **no hace falta saberlo**.
-- **Núcleo (interno):** raíz (root) trilateral -> *familia* (forma); forma
-  (7 patrones) -> *comportamiento*; `place x y z` -> posición. Cada node
-  compila a una **palabra de 32 bits**. El **Validator** valida.
+* **User layer** — users write `.scene` files using readable words (`thing`, `is walker`, `behavior paces`, `at`). Internally, these are translated into the engine's internal language; **users never need to know it**.
 
-### La forma fácil: RTGEngine Studio (editor + viewport en tiempo real)
+* **Core (internal):** trilateral root -> *family* (shape); shape (7 patterns) -> *behavior*; `place x y z` -> position. Every node compiles into a **32-bit word**. The **Validator** verifies the result.
+
+### The easy way: RTGEngine Studio (editor + real-time viewport)
 
 ```bash
 cd engine
 python studio.py
 ```
-Pulsa **Abrir viewport en vivo** (abre la ventana del motor) y **edita**: los
-cambios se aplican solos al viewport (hot-reload, sin botón de render). Dentro
-del viewport te mueves en tiempo real, **con la navegación del editor de Unreal**:
 
-```
-Clic DERECHO + ratón     = mirar          (modo vuelo)
-Clic DERECHO + WASD/EQ   = volar
-Rueda (con clic dcho)    = velocidad de vuelo
-Clic CENTRAL + arrastrar = pan
-Rueda (sin clic)         = acercar / alejar (dolly)
-Flechas                  = mirar (sin ratón)
-Espacio = afinar imagen (Cache)   ·   Esc = salir
-```
-Un panel muestra, solo informativo, la traducción interna al interno.
+Click **Open Live Viewport** (this launches the engine window), then **edit** your scene: changes are automatically applied to the viewport (hot reload, no render button required). Inside the viewport you can move in real time using **Unreal Editor-style navigation**:
 
-### A mano (línea de comandos)
+```text
+Right Mouse Button + Mouse = look around     (fly mode)
+Right Mouse Button + WASD/EQ = fly
+Mouse Wheel (while RMB held) = flight speed
+Middle Mouse Button + Drag = pan
+Mouse Wheel (without buttons) = zoom in/out (dolly)
+Arrow Keys = look around (without mouse)
+Space = refine image (Cache)   ·   Esc = exit
+```
+
+An information panel displays the internal translation into the engine's native representation.
+
+### Manual workflow (command line)
 
 ```bash
 cd engine
-# 1) edita examples/start.scene  (palabras legibles,)
-python forge.py examples/start.scene            # 2) forja el WGSL de la escena
-cd rtg-core && cargo run --release         # 3) míralo
-#   En la ventana:  Espacio = pausar/refinar (Cache) · Esc = salir
-# sin ventana, un PNG con amortización temporal:
+
+# 1) Edit examples/start.scene (human-readable language)
+python forge.py examples/start.scene      # 2) Generate the scene WGSL
+
+cd rtg-core && cargo run --release        # 3) Run it
+
+# Inside the window:
+# Space = pause/refine (Cache) · Esc = exit
+
+# Without a window, generate a PNG using temporal amortization:
 cargo run --release -- --snapshot out.png --samples 64   # SNAP_TIME=<t>
 ```
 
-> `.scene` = capa de usuario (recomendado) · `.node` = formato interno.
-> Ambos producen exactamente la misma escena.
+> `.scene` = user-facing layer (recommended) · `.node` = internal format.
+> Both produce exactly the same scene.
 
-### Probar
+### Running the tests
 
 ```bash
 cd engine
-python run.py examples/start.node           # demo del compilador en CPU
-python -m unittest rtg.tests.test_engine    # 24 pruebas (lexer/parser/compilador/eval/codegen)
+
+python run.py examples/start.node         # CPU compiler demo
+python -m unittest rtg.tests.test_engine  # 24 tests (lexer/parser/compiler/evaluator/codegen)
 ```
 
-## Estructura
+## Project Structure
 
-```
+```text
 engine/
-  studio.py        interfaz gráfica amigable (RTGEngine Studio)
-  rtg/           idioma
-    friendly.py    capa de usuario (.scene,)
-    lexer.py  parser.py  lexicon.py  compiler.py  evaluator.py  codegen.py
+  studio.py        user-friendly graphical interface (RTGEngine Studio)
+
+  rtg/             language
+    friendly.py    user layer (.scene)
+    lexer.py
+    parser.py
+    lexicon.py
+    compiler.py
+    evaluator.py
+    codegen.py
     tests/
-  examples/start.scene    (usuario)   ·   start.node (núcleo interno)
+
+  examples/
+    start.scene    (user)
+    start.node     (internal core)
+
   forge.py         .scene/.node -> rtg-core/src/scene.generated.wgsl
   run.py
-  rtg-core/    núcleo nativo (Rust + wgpu)
-    src/  main.rs  prelude.wgsl  core.wgsl  scene.generated.wgsl
+
+  rtg-core/        native core (Rust + wgpu)
+    src/
+    main.rs
+    prelude.wgsl
+    core.wgsl
+    scene.generated.wgsl
 ```
-
-## Siguiente
-
-1. ~~Capa de autoría sencilla~~ ✅ (`.scene` + `rtg/friendly.py`).
-2. ~~Cache en vivo (refinado progresivo en la ventana)~~ ✅ (Espacio).
-3. ~~Interfaz gráfica amigable~~ ✅ (`studio.py`).
-4. **Fase 4 — *La Puerta*** (EN MARCHA): importar assets a campos.
-   - Parte 1 ✅: `rtg/incarnate.py` — OBJ → validar → normalizar → hornear a
-     SDF firmado (`python -m rtg.incarnate modelo.obj`). Da `.sdf` + `.json`.
-   - Parte 2 (pendiente): que el motor cargue el `.sdf` (textura 3D) y lo dibuje.
-5. **Fase 5 — *El Firmamento***: render avanzado (god rays con sombras, reflejos, PBR).
-6. **Fase 6 — *El Aliento***: física, audio y herramientas.
