@@ -1,8 +1,6 @@
 # RTGEngine · RTGEngine Engine
 
-A graphics engine **designed from the ground up** around one core idea: *an object is a word* (internally **דָּבָר**, node = "word" = "thing"). Content is not made of pre-baked meshes and textures, but of **generators** (nodes) evaluated on demand. The complete architecture is documented in [`../docs/RTGEngine_Architecture_Manual_VolII.pdf`](../docs/RTGEngine_Architecture_Manual_VolII.pdf).
-
-> The only limitation we accept is the hardware itself (the real GPU and the physics of light). Everything above the GPU API is entirely our own.
+A graphics engine **designed from the ground up** around one core idea: *an object is a word*. Content is not made of pre-baked meshes and textures, but of **generators** (nodes) evaluated on demand. The complete architecture is documented in [`../docs/RTGEngine_Architecture_Manual_VolII.pdf`](../docs/RTGEngine_Architecture_Manual_VolII.pdf).
 
 
 
